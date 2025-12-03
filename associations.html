@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Dart Point – Associations & clubs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <style>
+    :root { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color-scheme: dark; }
+    body { margin:0; background:#05060a; color:#f9fafb; }
+    a{color:#7bdcff;text-decoration:none;} a:hover{text-decoration:underline;}
+    header{
+      position:sticky;top:0;z-index:10;
+      backdrop-filter:blur(12px);background:rgba(5,6,10,0.9);
+      border-bottom:1px solid rgba(255,255,255,0.05);
+    }
+    .container{max-width:1100px;margin:0 auto;padding:0 1.5rem;}
+    nav{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0;font-size:0.9rem;}
+    .logo{font-weight:700;letter-spacing:0.12em;text-transform:uppercase;font-size:0.9rem;}
+    .logo span{border:1px solid rgba(255,255,255,0.3);border-radius:999px;padding:0.1rem 0.4rem;margin-left:0.3rem;font-size:0.7rem;}
+    .nav-links a{margin-left:1.2rem;font-size:0.85rem;opacity:0.85;}
+    .nav-links a:hover{opacity:1;}
+    main{padding:2.5rem 0 3rem;}
+    h1{font-size:2rem;margin-bottom:0.4rem;}
+    p.lead{max-width:640px;font-size:0.95rem;opacity:0.9;}
+
+    #map-assos{
+      width:100%;height:350px;border-radius:1rem;
+      margin:1.2rem 0 2rem;border:1px solid rgba(148,163,184,0.5);
+    }
+
+    .layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1.3fr);gap:1.5rem;align-items:flex-start;}
+    .card-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;}
+    .card{
+      background:rgba(15,23,42,0.96);border-radius:1rem;
+      border:1px solid rgba(148,163,184,0.5);padding:0.9rem 1rem;font-size:0.85rem;
+    }
+    .card h3{margin:0 0 0.2rem;font-size:1rem;}
+    .card p{margin:0.2rem 0 0.4rem;}
+    .card-meta{display:flex;flex-wrap:wrap;gap:0.4rem;font-size:0.75rem;opacity:0.9;}
+
+    .add-box{
+      position:sticky;top:5.5rem;
+      background:rgba(15,23,42,0.96);border-radius:1rem;
+      border:1px solid rgba(148,163,184,0.5);padding:1rem 1.1rem;font-size:0.85rem;
+    }
+    .add-box h2{font-size:1rem;margin-top:0;}
+
+    .btn-main{
+      display:inline-flex;align-items:center;justify-content:center;gap:0.3rem;
+      border-radius:999px;padding:0.5rem 1.1rem;font-size:0.9rem;border:none;cursor:pointer;
+      background:linear-gradient(135deg,#38bdf8,#8b5cf6);color:#05060a;font-weight:600;
+    }
+    .field{margin-bottom:0.6rem;}
+    label{display:block;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;opacity:0.8;margin-bottom:0.15rem;}
+    input,textarea,select{
+      width:100%;border-radius:0.7rem;border:1px solid rgba(148,163,184,0.7);
+      background:rgba(15,23,42,0.95);color:#f9fafb;font-size:0.85rem;
+      padding:0.45rem 0.6rem;box-sizing:border-box;
+    }
+    textarea{min-height:80px;resize:vertical;}
+    .msg{margin-top:0.4rem;font-size:0.8rem;}
+    .msg-ok{color:#4ade80;} .msg-error{color:#fb7185;}
+
+    @media(max-width:900px){
+      .layout{grid-template-columns:minmax(0,1fr);}
+      .add-box{position:static;}
+      .nav-links{display:none;}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo">Dart Point <span>Bêta</span></div>
+      <div class="nav-links">
+        <a href="index.html">Accueil</a>
+        <a href="bars.html">Bars</a>
+        <a href="associations.html">Associations</a>
+        <a href="shop.html">Shop</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <h1>Associations & clubs de fléchettes</h1>
+    <p class="lead">
+      Aperçu de quelques clubs de la Ligue Sud-Ouest – Comité Pyrénées-Atlantiques.
+      Clique sur un marqueur pour voir la fiche contact. Le bouton à droite permet
+      de proposer une nouvelle association (ajout local).
+    </p>
+
+    <div id="map-assos"></div>
+
+    <div class="layout">
+      <div>
+        <div class="card-list" id="asso-list"></div>
+      </div>
+
+      <aside class="add-box">
+        <h2>Ajouter une association</h2>
+        <p>Formulaire de démonstration : le club se rajoute dans la liste, mais n’est pas encore enregistré sur un serveur.</p>
+        <form id="form-add-asso">
+          <div class="field">
+            <label for="nom-asso">Nom du club</label>
+            <input id="nom-asso" required placeholder="Ex. Euskal Dardoa">
+          </div>
+          <div class="field">
+            <label for="commune-asso">Commune</label>
+            <input id="commune-asso" placeholder="Ex. Cambo-les-Bains">
+          </div>
+          <div class="field">
+            <label for="type-asso">Type</label>
+            <select id="type-asso">
+              <option value="">Sélectionner</option>
+              <option value="traditionnel">Traditionnel</option>
+              <option value="electronique">Électronique</option>
+              <option value="mixte">Mixte</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="contact-asso">Contact / lien</label>
+            <input id="contact-asso" placeholder="Lien Facebook, mail…">
+          </div>
+          <div class="field">
+            <label for="desc-asso">Description</label>
+            <textarea id="desc-asso" placeholder="Ligue, comité, ambiance, horaires…"></textarea>
+          </div>
+          <button class="btn-main" type="submit">Ajouter une association</button>
+          <div class="msg" id="msg-asso"></div>
+        </form>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<script>
+  const assos = [
+    {
+      name: "Euskal Dardoa",
+      commune: "Cambo-les-Bains",
+      type: "Traditionnel",
+      desc: "Ligue Sud-Ouest · Comité Pyrénées-Atlantiques. Club basé à Cambo-les-Bains.",
+      contact: "https://www.facebook.com/profile.php?id=61561436857354",
+      coords: [43.3589, -1.4003]
+    },
+    {
+      name: "Marraque",
+      commune: "Bayonne",
+      type: "Traditionnel",
+      desc: "Club sport & loisirs de la caserne Marracq.",
+      contact: "",
+      coords: [43.4895, -1.4765]
+    },
+    {
+      name: "Battle Darts",
+      commune: "Soustons",
+      type: "Traditionnel",
+      desc: "Club orienté compétitions et animations fléchettes.",
+      contact: "https://www.facebook.com/profile.php?id=61567242986880",
+      coords: [43.7522, -1.3235]
+    },
+    {
+      name: "MX Darts",
+      commune: "Mourenx",
+      type: "Traditionnel",
+      desc: "Club accueillant joueurs loisirs et licenciés.",
+      contact: "https://www.facebook.com/mxdarts.club",
+      coords: [43.3667, -0.6]
+    }
+  ];
+
+  const map = L.map('map-assos').setView([43.5, -1.2], 9);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap'
+  }).addTo(map);
+
+  const assoList = document.getElementById('asso-list');
+
+  function renderAssos() {
+    assoList.innerHTML = "";
+    assos.forEach(a => {
+      if (a.coords) {
+        L.marker(a.coords)
+          .addTo(map)
+          .bindPopup(`<strong>${a.commune} – ${a.name}</strong><br>${a.type}`);
+      }
+
+      const card = document.createElement('article');
+      card.className = "card";
+      card.innerHTML = `
+        <h3>${a.commune} – ${a.name}</h3>
+        <p>${a.desc}</p>
+        <div class="card-meta">
+          <span>Type : ${a.type}</span>
+          ${a.contact ? `<span><a href="${a.contact}" target="_blank">Contact / lien</a></span>` : ""}
+        </div>
+      `;
+      assoList.appendChild(card);
+    });
+  }
+  renderAssos();
+
+  const form = document.getElementById('form-add-asso');
+  const msg = document.getElementById('msg-asso');
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nom = document.getElementById('nom-asso').value.trim();
+    if (!nom) {
+      msg.textContent = "Le nom du club est obligatoire.";
+      msg.className = "msg msg-error";
+      return;
+    }
+    const commune = document.getElementById('commune-asso').value.trim();
+    const type = document.getElementById('type-asso').value || "Type à préciser";
+    const contact = document.getElementById('contact-asso').value.trim();
+    const desc = document.getElementById('desc-asso').value.trim();
+
+    assos.push({
+      name: nom,
+      commune: commune || "Commune à préciser",
+      type,
+      desc: desc || "Association ajoutée par un utilisateur (démo).",
+      contact,
+      coords: null
+    });
+    renderAssos();
+    msg.textContent = "Association ajoutée dans la liste (démo, non enregistrée sur un serveur).";
+    msg.className = "msg msg-ok";
+    form.reset();
+  });
+</script>
+</body>
+</html>

@@ -2,32 +2,20 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Dart Point – Bars à fléchettes</title>
+  <title>Dart Point – Accueil</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Leaflet (OpenStreetMap) -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet/dist/leaflet.css"
-  />
-  <script
-    src="https://unpkg.com/leaflet/dist/leaflet.js">
-  </script>
 
   <style>
     :root {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.5;
-      color: #111;
-      background: #05060a;
       color-scheme: dark;
     }
     body {
       margin: 0;
-      color: #f5f5f5;
       background: radial-gradient(circle at top, #1a2435, #05060a 50%);
+      color: #f9fafb;
     }
-    a { color: #7bdcff; text-decoration: none; }
+    a { color: inherit; text-decoration: none; }
     a:hover { text-decoration: underline; }
 
     header {
@@ -39,817 +27,189 @@
       border-bottom: 1px solid rgba(255,255,255,0.05);
     }
     .container {
-      max-width: 1100px;
+      max-width: 1000px;
       margin: 0 auto;
       padding: 0 1.5rem;
     }
     nav {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       padding: 0.75rem 0;
+      font-size: 0.9rem;
     }
     .logo {
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       font-size: 0.9rem;
     }
     .logo span {
-      display: inline-block;
-      padding: 0.15rem 0.4rem;
+      border: 1px solid rgba(255,255,255,0.3);
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.15);
-      margin-left: 0.25rem;
+      padding: 0.1rem 0.4rem;
+      margin-left: 0.3rem;
       font-size: 0.7rem;
     }
     .nav-links a {
-      margin-left: 1.5rem;
-      font-size: 0.9rem;
+      margin-left: 1.2rem;
+      font-size: 0.85rem;
       opacity: 0.85;
     }
-    .nav-links a:hover {
-      opacity: 1;
-    }
+    .nav-links a:hover { opacity: 1; }
 
     main {
-      padding: 2.5rem 0 3rem;
-    }
-
-    section {
-      padding: 3rem 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    section:last-of-type {
-      border-bottom: none;
-    }
-    h1, h2, h3 {
-      font-weight: 700;
-      letter-spacing: 0.03em;
+      padding: 3rem 0 4rem;
     }
     h1 {
       font-size: 2.4rem;
-      margin-bottom: 0.75rem;
-    }
-    h2 {
-      font-size: 1.6rem;
-      margin-bottom: 1.5rem;
-    }
-    h3 {
-      font-size: 1.1rem;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.7rem;
+      letter-spacing: 0.03em;
     }
     p.lead {
+      max-width: 640px;
       font-size: 1rem;
-      max-width: 600px;
       opacity: 0.9;
     }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      border-radius: 999px;
-      padding: 0.1rem 0.6rem;
-      border: 1px solid rgba(255,255,255,0.15);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      opacity: 0.8;
-      margin-bottom: 0.75rem;
-    }
-    .badge-dot {
-      width: 0.45rem;
-      height: 0.45rem;
-      border-radius: 999px;
-      background: #4ade80;
-      box-shadow: 0 0 8px #4ade80;
-    }
-
     .hero {
       display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2.5fr);
-      gap: 2rem;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      gap: 2.5rem;
       align-items: center;
     }
-    .hero-aside {
+    .hero-card {
       border-radius: 1.2rem;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: radial-gradient(circle at top, rgba(96,165,250,0.15), rgba(0,0,0,0.9));
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.9);
       padding: 1.5rem;
       font-size: 0.9rem;
     }
-    .hero-aside h3 {
-      margin-bottom: 0.7rem;
-    }
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.75rem;
-    }
-    .chip {
-      border-radius: 999px;
-      padding: 0.15rem 0.6rem;
-      background: rgba(15,23,42,0.8);
-      border: 1px solid rgba(148,163,184,0.5);
-      font-size: 0.75rem;
-      white-space: nowrap;
+    .hero-card h2 {
+      font-size: 1.1rem;
+      margin-top: 0;
     }
 
-    .highlight-bars {
+    .btn-row {
       margin-top: 2rem;
-    }
-    .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1rem;
-      margin-top: 0.75rem;
-    }
-    .card {
-      border-radius: 1rem;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(15,23,42,0.85);
-      padding: 0.9rem 1rem;
-      font-size: 0.85rem;
-    }
-    .card-image {
-      border-radius: 0.7rem;
-      overflow: hidden;
-      margin-bottom: 0.5rem;
-      background: #020617;
-      height: 130px;
-    }
-    .card-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .card-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-top: 0.4rem;
-      font-size: 0.75rem;
-      opacity: 0.9;
-    }
-
-    .filters {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: 1fr;
       gap: 0.75rem;
-      margin-bottom: 1rem;
-    }
-    label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
-      opacity: 0.8;
-      display: block;
-      margin-bottom: 0.2rem;
-    }
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"],
-    select,
-    textarea {
-      width: 100%;
-      border-radius: 0.7rem;
-      border: 1px solid rgba(148,163,184,0.7);
-      padding: 0.5rem 0.6rem;
-      background: rgba(15,23,42,0.9);
-      color: #f9fafb;
-      font-size: 0.9rem;
-      box-sizing: border-box;
-    }
-    textarea {
-      min-height: 100px;
-      resize: vertical;
+      max-width: 420px;
     }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      border-radius: 999px;
-      padding: 0.45rem 1.1rem;
-      border: none;
-      font-size: 0.9rem;
-      cursor: pointer;
-      background: linear-gradient(135deg, #38bdf8, #8b5cf6);
-      color: #0b1020;
-      font-weight: 600;
-      margin-top: 0.4rem;
-    }
-    .btn-secondary {
-      background: transparent;
-      color: #e5e7eb;
-      border: 1px solid rgba(148,163,184,0.7);
-    }
-    .btn:hover {
-      filter: brightness(1.1);
-    }
-
-    .bar-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 0.9rem;
-    }
-
-    .bar-sheet {
-      display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-      gap: 2rem;
-    }
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 0.8rem;
-      margin: 1rem 0 1.3rem;
-      font-size: 0.85rem;
-    }
-    .info-block {
-      border-radius: 0.9rem;
-      border: 1px solid rgba(148,163,184,0.5);
-      padding: 0.7rem 0.8rem;
-      background: rgba(15,23,42,0.9);
-    }
-    .info-label {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      opacity: 0.75;
-      margin-bottom: 0.2rem;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-    .field {
-      margin-bottom: 0.7rem;
-    }
-    .hint {
-      font-size: 0.75rem;
-      opacity: 0.75;
-      margin-top: 0.2rem;
-    }
-    .checkbox-row {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      font-size: 0.8rem;
-      margin-top: 0.4rem;
+      justify-content: space-between;
+      border-radius: 0.9rem;
+      padding: 0.8rem 1rem;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.95);
+      cursor: pointer;
+      font-size: 0.95rem;
+      text-decoration: none;
     }
-
-    footer {
-      border-top: 1px solid rgba(255,255,255,0.06);
-      padding: 1rem 0 1.8rem;
-      font-size: 0.8rem;
-      opacity: 0.75;
-      text-align: center;
+    .btn span.label {
+      font-weight: 600;
     }
-
-    /* Carte OpenStreetMap */
-    #map {
-      width: 100%;
-      height: 350px;
-      border-radius: 1rem;
-      margin-top: 1rem;
-      border: 1px solid rgba(148,163,184,0.6);
-      overflow: hidden;
+    .btn span.desc {
+      font-size: 0.8rem;
+      opacity: 0.8;
+      margin-top: 0.1rem;
+      display: block;
+    }
+    .btn:hover {
+      border-color: #38bdf8;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    .btn-pill {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
     }
 
     @media (max-width: 768px) {
-      .hero, .bar-sheet {
+      .hero {
         grid-template-columns: minmax(0, 1fr);
       }
-      h1 {
-        font-size: 2rem;
-      }
-      .nav-links {
-        display: none;
-      }
+      h1 { font-size: 2rem; }
+      .nav-links { display: none; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <nav>
-        <div class="logo">
-          Dart Point <span>Bêta</span>
-        </div>
-        <div class="nav-links">
-          <a href="#accueil">Accueil</a>
-          <a href="#liste-bars">Bars</a>
-          <a href="#associations">Associations</a>
-          <a href="#fiche-bar">Exemple de fiche</a>
-          <a href="#proposer-bar">Proposer un bar</a>
-        </div>
-      </nav>
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo">
+        Dart Point <span>Bêta</span>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Accueil</a>
+        <a href="bars.html">Bars</a>
+        <a href="associations.html">Associations</a>
+        <a href="shop.html">Shop</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="container hero">
+    <div>
+      <h1>Dart Point, le guide des bars et clubs de fléchettes.</h1>
+      <p class="lead">
+        Dart Point recense les bars à fléchettes, les associations et, à terme,
+        une boutique dédiée au matos. Cartes, fiches détaillées, contacts, et
+        bientôt avis des joueurs.
+      </p>
+
+      <div class="btn-row">
+        <a class="btn" href="bars.html">
+          <div>
+            <span class="label">Trouver un bar à fléchettes près de chez soi</span>
+            <span class="desc">Carte, fiches détaillées, contact et bouton “Ajouter un bar”.</span>
+          </div>
+          <div class="btn-pill">1</div>
+        </a>
+
+        <a class="btn" href="associations.html">
+          <div>
+            <span class="label">Associations & clubs près de chez vous</span>
+            <span class="desc">Liste des clubs, fiche contact et carte des emplacements.</span>
+          </div>
+          <div class="btn-pill">2</div>
+        </a>
+
+        <a class="btn" href="shop.html">
+          <div>
+            <span class="label">Shop (à venir)</span>
+            <span class="desc">Idée : fléchettes, cibles, accessoires et goodies Dart Point.</span>
+          </div>
+          <div class="btn-pill">3</div>
+        </a>
+      </div>
     </div>
-  </header>
 
-  <main>
-    <!-- ACCUEIL -->
-    <section id="accueil">
-      <div class="container hero">
-        <div>
-          <div class="badge">
-            <span class="badge-dot"></span>
-            Guide des bars à fléchettes
-          </div>
-          <h1>Dart Point, la carte des bars où les fléchettes claquent.</h1>
-          <p class="lead">
-            Un site pour recenser les bars à fléchettes, comparer les cibles,
-            l’ambiance, les tournois, et découvrir de nouveaux terrains de jeu,
-            du casual entre amis au sérieux double-in en ligue.
-          </p>
-
-          <div style="margin-top:1.4rem;">
-            <button class="btn" type="button" onclick="document.location='#liste-bars'">
-              Explorer les bars
-            </button>
-            <button class="btn btn-secondary" type="button" onclick="document.location='#proposer-bar'">
-              Proposer un bar
-            </button>
-          </div>
-
-          <div class="highlight-bars">
-            <h3>Bars mis en avant</h3>
-            <div class="cards">
-              <article class="card">
-                <div class="card-image">
-                  <img src="https://source.unsplash.com/600x400/?pub,beer" alt="Intérieur de bar convivial">
-                </div>
-                <strong>Le Relais des Halles</strong> – Bayonne
-                <div class="card-meta">
-                  <span>Cibles traditionnelles à pointes acier</span>
-                  <span>Centre-ville</span>
-                  <span>Ambiance bar de quartier</span>
-                </div>
-              </article>
-              <article class="card">
-                <div class="card-image">
-                  <img src="https://source.unsplash.com/600x400/?bar,darts" alt="Bar avec fléchettes">
-                </div>
-                <strong>The Black Pig</strong> – Bayonne
-                <div class="card-meta">
-                  <span>Ambiance pub</span>
-                  <span>Cibles traditionnelles</span>
-                  <span>Idéal soirée entre amis</span>
-                </div>
-              </article>
-              <article class="card">
-                <div class="card-image">
-                  <img src="https://source.unsplash.com/600x400/?nightlife,bar" alt="Bar animé">
-                </div>
-                <strong>La Pétrolette</strong> – Bayonne
-                <div class="card-meta">
-                  <span>Cibles traditionnelles</span>
-                  <span>Bar animé</span>
-                  <span>Quartier central</span>
-                </div>
-              </article>
-            </div>
-          </div>
-
-          <div style="margin-top:2rem;">
-            <h3>Carte des bars à fléchettes autour de vous</h3>
-            <p class="lead" style="font-size:0.9rem;">
-              Exemple de carte OpenStreetMap avec quelques bars à fléchettes
-              autour de Bayonne et Cambo-les-Bains.
-            </p>
-            <div id="map"></div>
-          </div>
-        </div>
-
-        <aside class="hero-aside">
-          <h3>Comment ça marche ?</h3>
-          <p>
-            Dart Point référence les bars, indique les types de cibles, l’ambiance,
-            les tournois et les détails qui comptent vraiment pour les joueurs.
-          </p>
-          <p>
-            Les gérants et les joueurs peuvent suggérer de nouveaux lieux
-            et corriger les informations si quelque chose change.
-          </p>
-          <div class="chips">
-            <span class="chip">Cibles traditionnelles</span>
-            <span class="chip">Électroniques</span>
-            <span class="chip">Fléchettes fournies</span>
-            <span class="chip">Tournois & ligues</span>
-            <span class="chip">Avis des joueurs</span>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <!-- LISTE DES BARS -->
-    <section id="liste-bars">
-      <div class="container">
-        <h2>Bars à fléchettes près de chez vous</h2>
-        <p class="lead">
-          Filtre les bars par ville, type de cible ou équipement. Cette section
-          affichera à terme tous les bars enregistrés dans la base Dart Point.
-        </p>
-
-        <form class="filters">
-          <div>
-            <label for="ville">Ville</label>
-            <input type="text" id="ville" name="ville" placeholder="Ex. Bayonne">
-          </div>
-          <div>
-            <label for="type-cible">Type de cibles</label>
-            <select id="type-cible" name="type_cible">
-              <option value="">Toutes</option>
-              <option value="traditionnelle">Traditionnelle (pointes acier)</option>
-              <option value="electronique">Électronique</option>
-              <option value="mixte">Mixte</option>
-            </select>
-          </div>
-          <div>
-            <label for="flechettes">Fléchettes fournies</label>
-            <select id="flechettes" name="flechettes">
-              <option value="">Indifférent</option>
-              <option value="oui">Oui</option>
-              <option value="non">Non</option>
-            </select>
-          </div>
-          <div>
-            <label>&nbsp;</label>
-            <button class="btn" type="submit">Appliquer les filtres</button>
-          </div>
-        </form>
-
-        <div class="bar-list">
-          <article class="card">
-            <div class="card-image">
-              <img src="https://source.unsplash.com/600x400/?pub" alt="Bar Le Relais des Halles">
-            </div>
-            <h3>Bayonne – Le Relais des Halles</h3>
-            <p>Cibles traditionnelles à pointes acier · bar convivial en plein centre.</p>
-            <div class="card-meta">
-              <span>19 Rue Guilhamin</span>
-              <span>Repas sur place</span>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-image">
-              <img src="https://source.unsplash.com/600x400/?irish-pub" alt="Bar The Black Pig">
-            </div>
-            <h3>Bayonne – The Black Pig</h3>
-            <p>Cibles traditionnelles · style pub anglais, idéal pour les soirées darts.</p>
-            <div class="card-meta">
-              <span>21 Quai Amiral Jaureguiberry</span>
-              <span>Bar à ambiance</span>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-image">
-              <img src="https://source.unsplash.com/600x400/?bar,lights" alt="Bar La Pétrolette">
-            </div>
-            <h3>Bayonne – La Pétrolette</h3>
-            <p>Cibles traditionnelles · bar animé, esprit festif et musical.</p>
-            <div class="card-meta">
-              <span>31 Rue des Cordeliers</span>
-              <span>Centre historique</span>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-image">
-              <img src="https://source.unsplash.com/600x400/?beer,craft" alt="Bar H2Bière">
-            </div>
-            <h3>Cambo-les-Bains – H2Bière</h3>
-            <p>Cibles traditionnelles à pointes acier · bar à bières et fléchettes.</p>
-            <div class="card-meta">
-              <span>Cambo-les-Bains</span>
-              <span>Planches / apéro selon carte</span>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ASSOCIATIONS -->
-    <section id="associations">
-      <div class="container">
-        <h2>Associations & clubs de fléchettes près de chez vous</h2>
-        <p class="lead">
-          Retrouvez les clubs, ligues et associations où pratiquer les fléchettes
-          en mode entraînement, compétition ou loisir encadré.
-        </p>
-
-        <button class="btn" type="button" onclick="document.location='#form-association'">
-          Ajouter votre club
-        </button>
-
-        <div class="bar-list" style="margin-top:1.5rem;">
-          <article class="card">
-            <div class="card-image">
-              <img src="https://source.unsplash.com/600x400/?darts,team" alt="Euskal Dardoa">
-            </div>
-            <h3>Cambo-les-Bains – Euskal Dardoa</h3>
-            <p>
-              Ligue Sud-Ouest · Comité Pyrénées-Atlantiques. Club basé à
-              Cambo-les-Bains, dédié à la pratique des fléchettes traditionnelles,
-              en loisirs et en compétition.
-            </p>
-            <div class="card-meta">
-              <span>Commune : Cambo-les-Bains</span>
-              <span>Type : traditionnel (pointes acier)</span>
-              <span><a href="https://www.facebook.com/profile.php?id=61561436857354" target="_blank">Page Facebook</a></span>
-            </div>
-          </article>
-
-          <article class="card">
-            <div class="card-image">
-              <img src="https://source.unsplash.com/600x400/?darts,club" alt="Marraque">
-            </div>
-            <h3>Bayonne – Marraque</h3>
-            <p>
-              Ligue Sud-Ouest · Comité Pyrénées-Atlantiques. Club sport et loisirs
-              de la caserne Marracq, à Bayonne, avec section fléchettes.
-            </p>
-            <div class="card-meta">
-              <span>Adresse : 5 Av. Vital Biraben, Bayonne</span>
-              <span>Commune : Bayonne</span>
-              <span>Type : traditionnel (pointes acier)</span>
-            </div>
-          </article>
-
-          <article class="card">
-            <div class="card-image">
-              <img src="https://source.unsplash.com/600x400/?tournament,darts" alt="Battle Darts">
-            </div>
-            <h3>Soustons – Battle Darts</h3>
-            <p>
-              Ligue Sud-Ouest · Comité Pyrénées-Atlantiques. Club orienté
-              compétition et animations autour des fléchettes traditionnelles.
-            </p>
-            <div class="card-meta">
-              <span>Commune : Soustons</span>
-              <span>Type : traditionnel</span>
-              <span><a href="https://www.facebook.com/profile.php?id=61567242986880" target="_blank">Page Facebook</a></span>
-            </div>
-          </article>
-
-          <article class="card">
-            <div class="card-image">
-              <img src="https://source.unsplash.com/600x400/?sports,bar" alt="MX Darts">
-            </div>
-            <h3>Mourenx – MX Darts</h3>
-            <p>
-              Ligue Sud-Ouest · Comité Pyrénées-Atlantiques. Club de fléchettes
-              à Mourenx, accueil des joueurs loisirs et licenciés.
-            </p>
-            <div class="card-meta">
-              <span>Commune : Mourenx</span>
-              <span>Type : traditionnel</span>
-              <span><a href="https://www.facebook.com/mxdarts.club" target="_blank">Page Facebook</a></span>
-            </div>
-          </article>
-        </div>
-
-        <div id="form-association" style="margin-top:2.5rem;">
-          <h3>Ajouter votre club</h3>
-          <p class="lead" style="font-size:0.9rem;">
-            Remplissez ce formulaire pour référencer votre club ou association.
-            Les informations seront vérifiées avant publication.
-          </p>
-
-          <form>
-            <div class="form-grid">
-              <div class="field">
-                <label for="nom-club">Nom du club</label>
-                <input type="text" id="nom-club" name="nom_club" required placeholder="Ex. Euskal Dardoa">
-              </div>
-              <div class="field">
-                <label for="type-club">Type</label>
-                <select id="type-club" name="type_club" required>
-                  <option value="">Sélectionner</option>
-                  <option value="traditionnel">Traditionnel (pointes acier)</option>
-                  <option value="electronique">Électronique</option>
-                  <option value="mixte">Mixte</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="commune-club">Commune</label>
-                <input type="text" id="commune-club" name="commune_club" placeholder="Ex. Cambo-les-Bains">
-              </div>
-              <div class="field">
-                <label for="adresse-club">Adresse</label>
-                <input type="text" id="adresse-club" name="adresse_club" placeholder="Rue, numéro, code postal">
-              </div>
-            </div>
-
-            <div class="form-grid">
-              <div class="field">
-                <label for="horaires-club">Horaires / jours d’entraînement</label>
-                <input type="text" id="horaires-club" name="horaires_club" placeholder="Ex. Mardi & jeudi, 20h–23h">
-              </div>
-              <div class="field">
-                <label for="lien-club">Lien web / réseau social</label>
-                <input type="text" id="lien-club" name="lien_club" placeholder="Lien Facebook, site du club…">
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="description-club">Description</label>
-              <textarea id="description-club" name="description_club" placeholder="Ligue, comité, ambiance, niveau (loisir, compétition)…"></textarea>
-            </div>
-
-            <div class="field">
-              <label for="contact-club">Contact mail (facultatif)</label>
-              <input type="email" id="contact-club" name="contact_club" placeholder="Pour vous contacter si besoin">
-            </div>
-
-            <button class="btn" type="submit">Envoyer votre club</button>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <!-- FICHE BAR EXEMPLE -->
-    <section id="fiche-bar">
-      <div class="container">
-        <h2>Exemple de fiche bar</h2>
-        <div class="bar-sheet">
-          <div>
-            <h3>H2Bière – Cambo-les-Bains</h3>
-            <p class="lead">
-              Bar à bières et fléchettes, avec cibles traditionnelles à pointes acier
-              et une ambiance conviviale idéale pour les soirées entre amis ou en ligue.
-            </p>
-
-            <div class="info-grid">
-              <div class="info-block">
-                <div class="info-label">Adresse</div>
-                <div>Cambo-les-Bains (64250) – centre-ville</div>
-              </div>
-              <div class="info-block">
-                <div class="info-label">Horaires</div>
-                <div>Horaires variables selon saison · à préciser</div>
-              </div>
-              <div class="info-block">
-                <div class="info-label">Types de cibles</div>
-                <div>Cibles traditionnelles à pointes acier</div>
-              </div>
-              <div class="info-block">
-                <div class="info-label">Fléchettes</div>
-                <div>Fléchettes personnelles conseillées (à confirmer avec le bar)</div>
-              </div>
-            </div>
-
-            <h3>Soirées & tournois</h3>
-            <ul>
-              <li>Soirées fléchettes selon programmation du bar</li>
-              <li>Possibilité d’organiser des tournois locaux</li>
-              <li>Réservation de table recommandée les soirs de forte affluence</li>
-            </ul>
-
-            <button class="btn btn-secondary" type="button">
-              Proposer une correction
-            </button>
-          </div>
-
-          <aside class="hero-aside">
-            <h3>Commentaires joueurs (exemple)</h3>
-            <p>
-              Cibles bien positionnées, bonne distance de tir, ambiance chaleureuse.
-              Idéal pour découvrir les fléchettes ou jouer plus sérieusement.
-            </p>
-            <p>
-              La fiche pourra afficher les retours des joueurs : qualité du matériel,
-              ambiance, accueil, place disponible autour des pas de tir, etc.
-            </p>
-          </aside>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROPOSER UN BAR -->
-    <section id="proposer-bar">
-      <div class="container">
-        <h2>Proposer un bar</h2>
-        <p class="lead">
-          Tu connais un bar à fléchettes qui mérite sa place sur la carte ?
-          Remplis ce formulaire, on vérifie les infos et on l’ajoute au site.
-        </p>
-
-        <form>
-          <div class="form-grid">
-            <div class="field">
-              <label for="nom-bar">Nom du bar</label>
-              <input type="text" id="nom-bar" name="nom_bar" required placeholder="Ex. H2Bière">
-            </div>
-            <div class="field">
-              <label for="ville-bar">Ville</label>
-              <input type="text" id="ville-bar" name="ville_bar" required placeholder="Ex. Bayonne">
-            </div>
-            <div class="field">
-              <label for="adresse-bar">Adresse</label>
-              <input type="text" id="adresse-bar" name="adresse_bar" placeholder="Rue, numéro, code postal">
-            </div>
-            <div class="field">
-              <label for="contact-bar">Contact du bar</label>
-              <input type="text" id="contact-bar" name="contact_bar" placeholder="Téléphone, mail…">
-            </div>
-          </div>
-
-          <div class="form-grid">
-            <div class="field">
-              <label for="type-cible-form">Type de cibles</label>
-              <select id="type-cible-form" name="type_cible_form">
-                <option value="">Sélectionner</option>
-                <option value="traditionnelle">Traditionnelle (pointes acier)</option>
-                <option value="electronique">Électronique</option>
-                <option value="mixte">Mixte</option>
-                <option value="inconnu">Je ne sais pas</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="tournois">Soirées / tournois</label>
-              <input type="text" id="tournois" name="tournois" placeholder="Ex. tournoi jeudi, ligue locale…">
-            </div>
-          </div>
-
-          <div class="field">
-            <label for="commentaire">Commentaire</label>
-            <textarea id="commentaire" name="commentaire" placeholder="Ambiance, qualité des cibles, espace de tir, remarques…"></textarea>
-            <p class="hint">
-              Plus tu es précis, plus les joueurs sauront à quoi s’attendre.
-            </p>
-          </div>
-
-          <div class="field">
-            <label for="email-proposant">Ton e-mail (facultatif)</label>
-            <input type="email" id="email-proposant" name="email_proposant" placeholder="Pour te recontacter si besoin">
-          </div>
-
-          <div class="checkbox-row">
-            <input type="checkbox" id="rgpd" name="rgpd" required>
-            <label for="rgpd" style="margin:0;">
-              J’accepte que les informations saisies soient utilisées pour ajouter ce bar au site.
-            </label>
-          </div>
-
-          <button class="btn" type="submit">Envoyer la proposition</button>
-        </form>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container">
-      Dart Point · Projet de référencement des bars & clubs de fléchettes · Version de démonstration HTML.
-    </div>
-  </footer>
-
-  <!-- Script Leaflet / OpenStreetMap -->
-  <script>
-    // Carte centrée entre Bayonne et Cambo-les-Bains
-    var map = L.map('map').setView([43.43, -1.44], 10);
-
-    // Tuiles OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap'
-    }).addTo(map);
-
-    // Bars d'exemple
-    var bars = [
-      {
-        name: "Le Relais des Halles",
-        city: "Bayonne",
-        coords: [43.492949, -1.474841]
-      },
-      {
-        name: "The Black Pig",
-        city: "Bayonne",
-        coords: [43.492949, -1.474841]
-      },
-      {
-        name: "La Pétrolette",
-        city: "Bayonne",
-        coords: [43.492949, -1.474841]
-      },
-      {
-        name: "H2Bière",
-        city: "Cambo-les-Bains",
-        coords: [43.3589, -1.40028]
-      }
-    ];
-
-    bars.forEach(function(bar) {
-      L.marker(bar.coords)
-        .addTo(map)
-        .bindPopup("<strong>" + bar.city + " – " + bar.name + "</strong>");
-    });
-  </script>
+    <aside class="hero-card">
+      <h2>Principe du site</h2>
+      <p>
+        1. Recenser les bars et clubs où l’on peut jouer aux fléchettes
+        (traditionnelles ou électroniques).<br>
+        2. Offrir une fiche claire : adresse, type de cibles, ambiance, tournois,
+        contact, carte de géolocalisation.<br>
+        3. Permettre aux joueurs et aux gérants de suggérer des ajouts ou corrections.
+      </p>
+      <p>
+        Pour l’instant, les données sont en démonstration statique. À terme,
+        l’objectif est une vraie base en ligne alimentée par la communauté.
+      </p>
+    </aside>
+  </div>
+</main>
 </body>
 </html>
