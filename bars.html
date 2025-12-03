@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Dart Point – Bars à fléchettes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Leaflet (carte) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <style>
+    :root { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color-scheme: dark; }
+    body { margin: 0; background: #05060a; color: #f9fafb; }
+    a { color: #7bdcff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    header {
+      position: sticky; top: 0; z-index: 10;
+      backdrop-filter: blur(12px);
+      background: rgba(5, 6, 10, 0.9);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.75rem 0; font-size: 0.9rem;
+    }
+    .logo { font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.9rem; }
+    .logo span {
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 999px;
+      padding: 0.1rem 0.4rem;
+      margin-left: 0.3rem;
+      font-size: 0.7rem;
+    }
+    .nav-links a { margin-left: 1.2rem; font-size: 0.85rem; opacity: 0.85; }
+    .nav-links a:hover { opacity: 1; }
+
+    main { padding: 2.5rem 0 3rem; }
+    h1 { font-size: 2rem; margin-bottom: 0.4rem; }
+    p.lead { max-width: 640px; font-size: 0.95rem; opacity: 0.9; }
+
+    .search-box {
+      margin-top: 1.5rem;
+      padding: 0.9rem 1rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.96);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+    .search-box label {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+    .search-box input {
+      flex: 1 1 150px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.95);
+      color: #f9fafb;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+    }
+    .btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(30,64,175,0.9);
+      color: #f9fafb;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .btn.secondary {
+      background: transparent;
+      border-style: dashed;
+    }
+
+    #map-bars {
+      width: 100%;
+      height: 350px;
+      border-radius: 1rem;
+      margin: 1.2rem 0 2rem;
+      border: 1px solid rgba(148,163,184,0.5);
+    }
+
+    .bars-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.3fr);
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+
+    .bar-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      background: rgba(15,23,42,0.96);
+      border-radius: 1rem;
+      border: 1px solid rgba(148,163,184,0.5);
+      padding: 0.9rem 1rem;
+      font-size: 0.85rem;
+    }
+    .card h3 { margin: 0 0 0.2rem; font-size: 1rem; }
+    .card p { margin: 0.2rem 0 0.4rem; }
+    .card-meta {
+      display: flex; flex-wrap: wrap;
+      gap: 0.4rem;
+      font-size: 0.75rem; opacity: 0.9;
+    }
+    .card a.detail-link {
+      display: inline-block;
+      margin-top: 0.4rem;
+      font-size: 0.8rem;
+    }
+
+    .info-box {
+      position: sticky; top: 5.5rem;
+      background: rgba(15,23,42,0.96);
+      border-radius: 1rem;
+      border: 1px solid rgba(148,163,184,0.5);
+      padding: 1rem 1.1rem;
+      font-size: 0.85rem;
+    }
+    .info-box h2 { font-size: 1rem; margin-top: 0; }
+    .info-box p { margin: 0.4rem 0; }
+
+    @media (max-width: 900px) {
+      .bars-layout { grid-template-columns: minmax(0,1fr); }
+      .info-box { position: static; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo">Dart Point <span>Bêta</span></div>
+      <div class="nav-links">
+        <a href="index.html">Accueil</a>
+        <a href="bars.html">Bars</a>
+        <a href="associations.html">Associations</a>
+        <a href="shop.html">Shop</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <h1>Bars à fléchettes</h1>
+    <p class="lead">
+      Tape le nom d’une ville pour filtrer les bars sur la carte et dans la liste.
+      En cliquant sur un bar, tu seras redirigé vers sa fiche détaillée
+      (photos, commentaires, etc.).
+    </p>
+
+    <div class="search-box">
+      <label for="search-city">Ville</label>
+      <input id="search-city" placeholder="Ex. Bayonne, Cambo-les-Bains…">
+      <button class="btn" id="btn-search">Rechercher</button>
+      <button class="btn secondary" id="btn-reset">Tout afficher</button>
+    </div>
+
+    <div id="map-bars"></div>
+
+    <div class="bars-layout">
+      <section>
+        <div class="bar-list" id="bar-list"></div>
+      </section>
+
+      <aside class="info-box">
+        <h2>Ajouter un bar</h2>
+        <p>
+          Pour l’instant, Dart Point est une démo statique : la base n’est pas encore
+          connectée à un vrai serveur.
+        </p>
+        <p>
+          L’idée : un bouton “Ajouter un bar” ouvrira un formulaire, les infos seront
+          vérifiées puis ajoutées dans la base nationale.
+        </p>
+        <p>
+          En attendant, tu peux me l’envoyer par message et je le rajoute dans le code.
+        </p>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<script>
+  // Données des bars (avec un id pour la fiche détaillée)
+  const bars = [
+    {
+      id: "relais-halles",
+      name: "Le Relais des Halles",
+      city: "Bayonne",
+      address: "19 Rue Guilhamin, Bayonne",
+      type: "Traditionnelles (pointes acier)",
+      desc: "Bar convivial avec cibles traditionnelles.",
+      coords: [43.4929, -1.4748],
+      images: [
+        "https://images.pexels.com/photos/260922/pexels-photo-260922.jpeg",
+        "https://images.pexels.com/photos/274192/pexels-photo-274192.jpeg"
+      ]
+    },
+    {
+      id: "black-pig",
+      name: "The Black Pig",
+      city: "Bayonne",
+      address: "21 Quai Amiral Jaureguiberry, Bayonne",
+      type: "Traditionnelles (pointes acier)",
+      desc: "Ambiance pub anglais, soirées darts et musique.",
+      coords: [43.4927, -1.4745],
+      images: [
+        "https://images.pexels.com/photos/338713/pexels-photo-338713.jpeg"
+      ]
+    },
+    {
+      id: "petrolette",
+      name: "La Pétrolette",
+      city: "Bayonne",
+      address: "31 Rue des Cordeliers, Bayonne",
+      type: "Traditionnelles (pointes acier)",
+      desc: "Bar animé, musique live et fléchettes.",
+      coords: [43.4932, -1.4779],
+      images: [
+        "https://images.pexels.com/photos/602750/pexels-photo-602750.jpeg"
+      ]
+    },
+    {
+      id: "h2biere",
+      name: "H2Bière",
+      city: "Cambo-les-Bains",
+      address: "Centre-ville, 64250 Cambo-les-Bains",
+      type: "Traditionnelles (pointes acier)",
+      desc: "Bar à bières avec cibles traditionnelles et ambiance locale.",
+      coords: [43.3589, -1.4003],
+      images: [
+        "https://images.pexels.com/photos/1267340/pexels-photo-1267340.jpeg"
+      ]
+    }
+  ];
+
+  const map = L.map('map-bars').setView([43.43, -1.44], 10);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap'
+  }).addTo(map);
+
+  const markersLayer = L.layerGroup().addTo(map);
+  const barList = document.getElementById('bar-list');
+  const searchInput = document.getElementById('search-city');
+
+  function renderBars(list) {
+    markersLayer.clearLayers();
+    barList.innerHTML = "";
+
+    list.forEach(bar => {
+      // Marker carte
+      if (bar.coords) {
+        const m = L.marker(bar.coords).addTo(markersLayer);
+        m.bindPopup(
+          `<strong>${bar.city} – ${bar.name}</strong><br>${bar.address}<br>` +
+          `<a href="bar.html?id=${bar.id}">Voir la fiche détaillée</a>`
+        );
+        m.on('click', () => {});
+      }
+
+      // Carte dans la liste
+      const card = document.createElement('article');
+      card.className = "card";
+      card.innerHTML = `
+        <h3>${bar.city} – ${bar.name}</h3>
+        <p>${bar.desc}</p>
+        <div class="card-meta">
+          <span>${bar.address}</span>
+          <span>${bar.type}</span>
+        </div>
+        <a class="detail-link" href="bar.html?id=${bar.id}">
+          Voir la fiche détaillée →
+        </a>
+      `;
+      barList.appendChild(card);
+    });
+
+    if (list.length > 0 && list[0].coords) {
+      map.setView(list[0].coords, 12);
+    }
+  }
+
+  // Filtre par ville
+  function filterByCity() {
+    const q = searchInput.value.trim().toLowerCase();
+    if (!q) {
+      renderBars(bars);
+      return;
+    }
+    const filtered = bars.filter(b => b.city.toLowerCase().includes(q));
+    renderBars(filtered);
+  }
+
+  document.getElementById('btn-search').addEventListener('click', filterByCity);
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    searchInput.value = "";
+    renderBars(bars);
+  });
+  searchInput.addEventListener('keyup', (e) => {
+    if (e.key === "Enter") filterByCity();
+  });
+
+  // Affichage initial
+  renderBars(bars);
+</script>
+</body>
+</html>
